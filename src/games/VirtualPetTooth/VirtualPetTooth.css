@@ -1,0 +1,121 @@
+.virtual-pet-game {
+  min-height: 100vh;
+  background: var(--blue-bg);
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.pet-arena {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Stats Bars */
+.pet-stats-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+
+.stat-row span {
+  width: 60px;
+  text-align: right;
+  font-size: 14px;
+}
+
+.bar-bg {
+  flex-grow: 1;
+  height: 16px;
+  background: var(--gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-fill.bg-pink { background: var(--pink); }
+.bar-fill.bg-teal { background: var(--teal); }
+.bar-fill.bg-yellow { background: var(--yellow); }
+
+/* Character */
+.pet-character-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  position: relative;
+}
+
+.tooth-body {
+  width: 160px;
+  height: 180px;
+  background: white;
+  border-radius: 60px 60px 20px 20px;
+  box-shadow: inset -10px -10px 20px rgba(0,0,0,0.05),
+              0 20px 40px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s;
+}
+
+/* States */
+.tooth-body.idle { animation: floatSlow 4s infinite; }
+.tooth-body.eating { animation: bounce-in 0.5s infinite alternate; }
+.tooth-body.brushing { animation: shake 0.5s infinite; background: var(--teal-light); }
+.tooth-body.sleeping { animation: floatSlow 6s infinite; filter: brightness(0.9); }
+.tooth-body.sick { background: #E2F0CB; animation: shake 2s infinite; }
+
+.tooth-face {
+  font-size: 80px;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
+}
+
+.action-feedback {
+  height: 40px;
+  margin-top: 20px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  font-size: 18px;
+}
+
+/* Controls */
+.pet-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.control-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.control-emoji {
+  font-size: 32px;
+}
+
+@media (max-width: 600px) {
+  .pet-controls { grid-template-columns: 1fr; }
+}

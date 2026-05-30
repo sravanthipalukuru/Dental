@@ -1,0 +1,158 @@
+.tooth-fairy-game {
+  min-height: 100vh;
+  background: var(--blue-bg);
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.fairy-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Display Area */
+.fairy-display {
+  background: radial-gradient(circle at center, #E0BBE4 0%, #957DAD 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+.fairy-character {
+  position: relative;
+  z-index: 10;
+}
+
+.fairy-base {
+  font-size: 150px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+.fairy-wings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 200px;
+  z-index: -1;
+  opacity: 0.8;
+}
+
+.fairy-wand {
+  position: absolute;
+  bottom: 20px;
+  right: -40px;
+  font-size: 80px;
+  transform: rotate(15deg);
+}
+
+.fairy-crown {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 80px;
+  z-index: 20;
+}
+
+/* Magic Effects */
+.magic-overlay {
+  position: absolute;
+  inset: 0;
+  background: white;
+  z-index: 50;
+  mix-blend-mode: overlay;
+  animation: flash 2s ease-in-out forwards;
+}
+
+.spinning {
+  animation: spinTransform 2s ease-in-out;
+}
+
+@keyframes flash {
+  0% { opacity: 0; }
+  50% { opacity: 1; filter: brightness(2); }
+  100% { opacity: 0; }
+}
+
+@keyframes spinTransform {
+  0% { transform: scale(1) rotate(0deg); filter: blur(0px); }
+  50% { transform: scale(0.5) rotate(720deg); filter: blur(10px); }
+  100% { transform: scale(1) rotate(1440deg); filter: blur(0px); }
+}
+
+/* Controls */
+.fairy-controls {
+  padding: 40px;
+  text-align: left;
+}
+
+.wardrobe-section {
+  margin-bottom: 24px;
+}
+
+.wardrobe-section h3 {
+  color: var(--purple);
+  margin-bottom: 12px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.options-row {
+  display: flex;
+  gap: 16px;
+}
+
+.wardrobe-btn {
+  width: 70px;
+  height: 70px;
+  background: var(--gray-100);
+  border: 3px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wardrobe-btn:hover {
+  background: var(--purple-light);
+  transform: translateY(-2px);
+}
+
+.wardrobe-btn.active {
+  background: var(--purple-light);
+  border-color: var(--purple);
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+}
+
+.magical-btn {
+  background: linear-gradient(45deg, #9b59b6, #e056fd);
+  border: none;
+  box-shadow: 0 10px 20px rgba(155, 89, 182, 0.4);
+}
+.magical-btn:hover {
+  background: linear-gradient(45deg, #8e44ad, #be2edd);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 800px) {
+  .fairy-layout { grid-template-columns: 1fr; }
+  .fairy-display { min-height: 400px; }
+  .fairy-base { font-size: 120px; }
+  .fairy-wings { font-size: 160px; }
+  .fairy-controls { padding: 24px; }
+}

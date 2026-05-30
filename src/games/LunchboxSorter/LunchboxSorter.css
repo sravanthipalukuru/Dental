@@ -1,0 +1,96 @@
+.lunchbox-sorter-game {
+  min-height: 100vh;
+  background: var(--blue-bg);
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.sorter-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Conveyor Belt / Source */
+.food-conveyor {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 30px;
+  background: repeating-linear-gradient(90deg, #f1f2f6, #f1f2f6 20px, #dfe4ea 20px, #dfe4ea 40px);
+  border-radius: var(--radius-lg);
+  border: 4px solid var(--gray-300);
+}
+
+.food-item {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  user-select: none;
+  touch-action: none;
+}
+
+.food-item.dragging {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+/* Drop Boxes */
+.boxes-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.sort-box {
+  background: #f8f9fa;
+  border-radius: var(--radius-lg);
+  border: 4px solid var(--gray-300);
+  transition: all 0.2s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.sort-box.healthy-box.drag-over {
+  border-color: var(--green);
+  background: var(--green-light);
+  transform: scale(1.05);
+}
+
+.sort-box.treat-box.drag-over {
+  border-color: var(--pink);
+  background: var(--pink-light);
+  transform: scale(1.05);
+}
+
+.box-inside {
+  flex-grow: 1;
+  min-height: 200px;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-content: flex-start;
+}
+
+.boxed-food {
+  font-size: 40px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+@media (max-width: 600px) {
+  .boxes-container { grid-template-columns: 1fr; }
+  .food-item { width: 60px; height: 60px; font-size: 40px; }
+  .box-inside { min-height: 150px; }
+}

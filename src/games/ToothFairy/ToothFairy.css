@@ -1,0 +1,150 @@
+.tooth-fairy-game {
+  min-height: 100vh;
+  background: var(--pink-light);
+  background-image: radial-gradient(circle at 20% 20%, white 2px, transparent 3px),
+                    radial-gradient(circle at 80% 80%, white 2px, transparent 3px),
+                    radial-gradient(circle at 10% 80%, white 1.5px, transparent 2px),
+                    radial-gradient(circle at 90% 10%, white 1.5px, transparent 2px);
+  background-size: 100px 100px;
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.fairy-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.fairy-preview {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
+  border: 4px solid white;
+}
+
+.fairy-controls {
+  text-align: left;
+}
+
+/* Character Assembly */
+.fairy-character {
+  position: relative;
+  width: 150px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.f-wings {
+  position: absolute;
+  top: 40px;
+  font-size: 140px;
+  z-index: 0;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
+}
+
+.f-head {
+  font-size: 80px;
+  z-index: 2;
+  margin-top: 20px;
+}
+
+.f-dress {
+  width: 100px;
+  height: 120px;
+  background: var(--teal);
+  border-radius: 40px 40px 10px 10px;
+  z-index: 1;
+  margin-top: -10px;
+  transition: background 0.3s ease;
+  box-shadow: inset -10px -10px 20px rgba(0,0,0,0.1);
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+}
+
+.f-wand {
+  position: absolute;
+  right: -20px;
+  top: 90px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: floatSlow 3s infinite;
+}
+
+.wand-stick {
+  width: 4px;
+  height: 80px;
+  background: #f1c40f;
+  margin-top: -10px;
+  border-radius: 4px;
+}
+
+.wand-top {
+  font-size: 40px;
+  z-index: 2;
+  filter: drop-shadow(0 0 10px rgba(255, 230, 109, 0.8));
+}
+
+/* Controls */
+.control-section {
+  margin-bottom: 24px;
+}
+
+.control-section h3 {
+  font-size: 16px;
+  color: var(--gray-600);
+  margin-bottom: 12px;
+}
+
+.options-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.color-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s;
+}
+
+.color-btn.active {
+  transform: scale(1.2);
+  border-color: var(--teal);
+}
+
+.opt-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  border: 2px solid var(--gray-200);
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.opt-btn.active {
+  background: var(--blue-bg);
+  border-color: var(--teal);
+  box-shadow: inset 0 0 0 2px var(--teal);
+}
+
+@media (max-width: 768px) {
+  .fairy-layout { grid-template-columns: 1fr; }
+  .fairy-preview { min-height: 300px; }
+}

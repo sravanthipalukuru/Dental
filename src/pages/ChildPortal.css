@@ -1,0 +1,139 @@
+.child-portal {
+  padding-top: calc(var(--nav-height) + 40px);
+}
+
+.portal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.avatar-status {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 32px 16px 16px;
+  border-radius: var(--radius-full);
+}
+
+.avatar-circle {
+  width: 64px; height: 64px;
+  background: var(--grad-yellow);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.status-info h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.status-badges {
+  display: flex;
+  gap: 12px;
+}
+
+.dr-smiles-btn {
+  font-size: 18px;
+  padding: 16px 32px;
+}
+
+/* Daily Mission */
+.daily-mission {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--grad-hero);
+  color: white;
+  margin-bottom: 48px;
+  padding: 40px;
+}
+
+.mission-content {
+  max-width: 500px;
+}
+
+.mission-content h3 {
+  font-size: 32px;
+  margin: 16px 0 12px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mission-content p {
+  font-size: 18px;
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+
+.mission-graphic {
+  font-size: 80px;
+  letter-spacing: -10px;
+  background: rgba(255,255,255,0.2);
+  padding: 30px;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
+}
+
+/* Sections */
+.portal-section {
+  margin-bottom: 48px;
+}
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.see-all-link {
+  display: flex;
+  align-items: center;
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.see-all-link:hover { color: var(--teal-dark); text-decoration: underline; }
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Progress */
+.smile-progress {
+  padding: 40px;
+}
+
+.progress-bar-container {
+  height: 24px;
+  background: var(--gray-100);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--grad-pink);
+  border-radius: var(--radius-full);
+  transition: width 1s ease-in-out;
+}
+
+.mt-3 { margin-top: 16px; }
+
+@media (max-width: 900px) {
+  .portal-header { flex-direction: column; align-items: stretch; }
+  .avatar-status { padding: 20px; border-radius: var(--radius-lg); flex-direction: column; text-align: center; }
+  .daily-mission { flex-direction: column; text-align: center; gap: 32px; padding: 32px 20px; }
+  .games-grid { grid-template-columns: 1fr; }
+}

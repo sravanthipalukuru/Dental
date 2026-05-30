@@ -1,0 +1,88 @@
+.toothpaste-puzzle-game {
+  min-height: 100vh;
+  background: var(--blue-bg);
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.puzzle-board-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 32px;
+  background: #f1f2f6;
+  border-radius: var(--radius-lg);
+}
+
+.sliding-puzzle {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+  background: var(--gray-300);
+  padding: 4px;
+  border-radius: 8px;
+  aspect-ratio: 1/1;
+}
+
+.puzzle-tile-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--gray-200); /* Shows behind empty tile */
+}
+
+.empty-tile {
+  cursor: default;
+  background: transparent;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* 
+  We use a CSS gradient as a placeholder image for the toothpaste, 
+  so it works perfectly without needing external image assets.
+*/
+.puzzle-tile-image {
+  width: 100%;
+  height: 100%;
+  /* A nice vibrant gradient that forms a full picture when assembled */
+  background-image: 
+    linear-gradient(135deg, var(--teal) 0%, var(--blue) 50%, var(--pink) 100%),
+    radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, transparent 60%);
+  background-blend-mode: overlay;
+  background-size: 300% 300%; /* Because it's a 3x3 grid */
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.3);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 8px;
+}
+
+.won-grid .puzzle-tile-image {
+  box-shadow: none; /* Remove borders to show a seamless picture */
+}
+
+.won-grid {
+  gap: 0;
+  background: transparent;
+}
+
+.tile-hint {
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  background: rgba(0,0,0,0.3);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+@media (max-width: 600px) {
+  .puzzle-board-container { padding: 16px; }
+}

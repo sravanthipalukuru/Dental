@@ -1,0 +1,105 @@
+.brush-master-game {
+  min-height: 100vh;
+  background: var(--blue-bg);
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Meter */
+.cleanliness-meter {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+}
+
+.meter-bg {
+  width: 100px;
+  height: 10px;
+  background: var(--gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.brush-area {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  padding: 40px;
+}
+
+.teeth-bg {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: #f8f9fa;
+  border: 4px solid var(--gray-200);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.teeth-bg.brushing {
+  cursor: grabbing;
+  /* Visual cue that brushing is active */
+  box-shadow: inset 0 0 20px rgba(78, 205, 196, 0.2);
+}
+
+.tooth-big {
+  font-size: 200px;
+  user-select: none;
+  pointer-events: none; /* Let spots receive events */
+  transition: filter 0.5s;
+}
+
+.plaque-spot {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, #8e44ad 0%, #9b59b6 100%);
+  border-radius: 50%;
+  margin-left: -20px;
+  margin-top: -20px;
+  /* Uneven shape */
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  animation: morph 3s ease-in-out infinite;
+  box-shadow: inset -2px -2px 6px rgba(0,0,0,0.3);
+  z-index: 10;
+  touch-action: none;
+}
+
+@keyframes morph {
+  0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+}
+
+/* Particles */
+.brush-particle {
+  position: fixed; /* Fixed relative to screen for absolute event coordinates */
+  width: 8px;
+  height: 8px;
+  background: var(--teal-light);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+@media (max-width: 600px) {
+  .teeth-bg { height: 300px; }
+  .tooth-big { font-size: 150px; }
+  .plaque-spot { width: 30px; height: 30px; margin-left: -15px; margin-top: -15px; }
+  .meter-bg { width: 60px; }
+}

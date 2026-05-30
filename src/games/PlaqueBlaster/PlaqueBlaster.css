@@ -1,0 +1,126 @@
+.plaque-blaster-game {
+  min-height: 100vh;
+  background: #0a0a1a;
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.text-neon {
+  color: #00ffcc;
+  text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+}
+
+.text-light {
+  color: #a0aab5;
+}
+
+.bg-dark {
+  background: #111122 !important;
+  border: 1px solid #333355;
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.1);
+}
+
+.blaster-arena {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.sci-fi-grid {
+  background-color: #050510 !important;
+  background-image: 
+    linear-gradient(rgba(0, 255, 204, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 204, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+.teeth-canvas {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 2px solid #00ffcc;
+  cursor: crosshair;
+  box-shadow: inset 0 0 50px rgba(0,255,204,0.1), 0 0 15px rgba(0,255,204,0.3);
+}
+
+.teeth-canvas.spraying {
+  cursor: grabbing;
+  box-shadow: inset 0 0 80px rgba(255,0,255,0.2), 0 0 25px rgba(255,0,255,0.4);
+  border-color: #ff00ff;
+}
+
+.giant-tooth-bg.neon-tooth {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 250px;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 204, 0.4)) hue-rotate(180deg) saturate(2);
+  opacity: 0.8;
+}
+
+.alien-plaque-blob {
+  position: absolute;
+  background: radial-gradient(circle, #ff00ff 0%, #8a2be2 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.8));
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: pulse-alien 2s infinite alternate;
+}
+
+@keyframes pulse-alien {
+  0% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.6)); }
+  100% { transform: translate(-50%, -50%) scale(1.05); filter: drop-shadow(0 0 25px rgba(255, 0, 255, 1)); }
+}
+
+.plasma-particle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #00ffcc;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  box-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc, inset 0 0 5px #fff;
+}
+
+.neon-btn {
+  background: transparent;
+  border: 2px solid #00ffcc;
+  color: #00ffcc;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 0 10px rgba(0,255,204,0.3), inset 0 0 10px rgba(0,255,204,0.3);
+  transition: all 0.3s ease;
+}
+
+.neon-btn:hover {
+  background: #00ffcc;
+  color: #000;
+  box-shadow: 0 0 20px rgba(0,255,204,0.6), inset 0 0 10px rgba(0,255,204,0.6);
+}
+
+.neon-text {
+  color: #00ffcc;
+  text-shadow: 0 0 10px rgba(0,255,204,0.6);
+}
+
+.bg-purple {
+  background-color: rgba(138, 43, 226, 0.3);
+  border: 1px solid #8a2be2;
+  color: #e6a8ff;
+  box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+@media (max-width: 600px) {
+  .teeth-canvas { height: 350px; }
+  .giant-tooth-bg.neon-tooth { font-size: 180px; }
+}

@@ -1,0 +1,68 @@
+.graduation-day-game {
+  min-height: 100vh;
+  background: #0f172a; /* Dark background for fireworks and credits */
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ceremony-view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.diploma-container {
+  padding: 20px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  pointer-events: auto;
+}
+
+.diploma {
+  width: 100%;
+  max-width: 600px;
+  padding: 60px 40px;
+  border: 10px double #d4af37; /* Gold border */
+  background: #fdfbf7;
+  text-align: center;
+}
+
+.font-script {
+  font-family: 'Brush Script MT', cursive, sans-serif;
+}
+
+/* Credits */
+.credits-view {
+  position: absolute;
+  inset: 0;
+  top: var(--nav-height);
+  display: flex;
+  justify-content: center;
+  z-index: 20;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.credits-roll {
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  padding-top: 100vh; /* Start way below the screen */
+}
+
+.credit-block {
+  margin-bottom: 60px;
+}
+
+@media (max-width: 600px) {
+  .diploma { padding: 40px 20px; border-width: 6px; }
+  .diploma h1 { font-size: 24px; }
+  .diploma h2 { font-size: 28px; }
+}

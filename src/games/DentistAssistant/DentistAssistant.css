@@ -1,0 +1,122 @@
+.dentist-assistant-game {
+  min-height: 100vh;
+  background: var(--blue-bg);
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.assistant-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #f1f2f6;
+}
+
+/* Shelf */
+.shelf-area h3 {
+  color: var(--teal-dark);
+  margin-bottom: 20px;
+}
+
+.shelf-grid {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: #dfe4ea;
+  border-radius: var(--radius-lg);
+  border-bottom: 8px solid #ced6e0;
+}
+
+.shelf-item {
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  user-select: none;
+  touch-action: none;
+}
+
+.shelf-item.dragging {
+  opacity: 0.5;
+}
+
+.shelf-item .item-emoji {
+  font-size: 40px;
+  pointer-events: none;
+}
+
+.shelf-item .item-name {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--gray-600);
+  pointer-events: none;
+}
+
+/* Tray */
+.tray-area h3 {
+  color: var(--pink);
+  margin-bottom: 20px;
+}
+
+.tray-slots {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 20px;
+  border: 4px solid var(--gray-200);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+}
+
+.tray-slot {
+  width: 120px;
+  height: 120px;
+  border: 3px dashed var(--gray-300);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  background: #f8f9fa;
+}
+
+.tray-slot.drag-over {
+  background: var(--teal-light);
+  border-color: var(--teal);
+  transform: scale(1.1);
+}
+
+.tray-slot.filled {
+  border: 3px solid var(--teal);
+  background: white;
+}
+
+.slotted-item {
+  font-size: 60px;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+}
+
+.slot-hint {
+  font-size: 14px;
+  color: var(--gray-400);
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .shelf-item { width: 80px; height: 80px; }
+  .shelf-item .item-emoji { font-size: 30px; }
+  .tray-slots { gap: 10px; padding: 20px; flex-wrap: wrap; }
+  .tray-slot { width: 90px; height: 90px; }
+  .slotted-item { font-size: 40px; }
+}

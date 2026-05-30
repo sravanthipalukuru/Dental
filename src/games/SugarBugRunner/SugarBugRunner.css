@@ -1,0 +1,176 @@
+.sugar-bug-runner-game {
+  min-height: 100vh;
+  background: var(--dark);
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.runner-arena {
+  width: 100%;
+  height: 500px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #1a0b2e 0%, #000000 100%);
+  border: 4px solid var(--pink);
+  box-shadow: 0 0 30px rgba(255,107,157,0.4), inset 0 0 30px rgba(255,107,157,0.4);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  perspective: 600px;
+  align-self: stretch;
+}
+
+/* 3D Neon Grid */
+.runner-bg {
+  position: absolute;
+  top: 50%; left: -50%; right: -50%; bottom: -50%;
+  background-image: 
+    linear-gradient(90deg, rgba(78,205,196,0.3) 1px, transparent 1px),
+    linear-gradient(rgba(78,205,196,0.3) 1px, transparent 1px);
+  background-size: 80px 80px;
+  transform-origin: top center;
+  transform: rotateX(60deg) translateZ(-100px);
+  animation: scrollGrid 1s linear infinite;
+}
+
+@keyframes scrollGrid {
+  from { background-position: 0 0; }
+  to { background-position: 0 80px; }
+}
+
+.skyline {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(to bottom, #1a0b2e, #ff6b9d33);
+  z-index: 1;
+}
+
+.sun {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 100px;
+  background: linear-gradient(to top, var(--pink), var(--yellow));
+  border-radius: 200px 200px 0 0;
+  box-shadow: 0 0 50px var(--pink);
+  z-index: 1;
+}
+
+/* Player */
+.player-tooth {
+  position: absolute;
+  left: 20%; 
+  bottom: 80px; 
+  font-size: 60px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-tooth::before {
+  content: '';
+  position: absolute;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: 4px solid var(--teal);
+  box-shadow: 0 0 20px var(--teal), inset 0 0 20px var(--teal);
+  opacity: 0.8;
+  animation: pulseShield 1s infinite alternate;
+}
+
+@keyframes pulseShield {
+  from { transform: scale(1); opacity: 0.6; }
+  to { transform: scale(1.1); opacity: 0.9; }
+}
+
+.player-tooth.running {
+  animation: runBounce 0.3s infinite alternate;
+}
+
+@keyframes runBounce {
+  0% { transform: translateY(0) rotate(-5deg); }
+  100% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.player-tooth.jumping {
+  bottom: 250px;
+  transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: rotate(360deg);
+}
+
+.player-tooth.double-jumping {
+  bottom: 350px;
+  transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: rotate(720deg);
+}
+
+/* Obstacles (Neon Bugs) */
+.obstacle {
+  position: absolute;
+  bottom: 80px;
+  z-index: 5;
+  font-size: 40px;
+  filter: drop-shadow(0 0 20px #e74c3c);
+  animation: wobble 0.5s infinite alternate;
+}
+
+@keyframes wobble {
+  from { transform: rotate(-10deg) scale(1); }
+  to { transform: rotate(10deg) scale(1.1); }
+}
+
+/* Collectibles */
+.collectible {
+  position: absolute;
+  z-index: 5;
+  font-size: 40px;
+  filter: drop-shadow(0 0 20px var(--yellow));
+  animation: spinGlow 2s linear infinite;
+}
+
+@keyframes spinGlow {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.collectible.low { bottom: 120px; }
+.collectible.high { bottom: 280px; }
+
+/* Hyperspeed Warp */
+.arena-warp .runner-bg {
+  animation: scrollGrid 0.2s linear infinite;
+  filter: blur(2px) contrast(2);
+}
+.arena-warp {
+  box-shadow: 0 0 100px rgba(78,205,196,0.8), inset 0 0 100px rgba(78,205,196,0.8);
+}
+
+/* Hint */
+.jump-hint {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--white);
+  font-weight: 900;
+  font-size: 24px;
+  text-shadow: 0 0 10px var(--pink);
+  pointer-events: none;
+  animation: flash 1s infinite alternate;
+  z-index: 20;
+}
+
+@keyframes flash {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .runner-arena { height: 400px; }
+  .player-tooth { font-size: 50px; }
+  .player-tooth.jumping { bottom: 180px; }
+  .player-tooth.double-jumping { bottom: 260px; }
+  .collectible.high { bottom: 200px; }
+}

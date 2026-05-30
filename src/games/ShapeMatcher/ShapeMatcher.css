@@ -1,0 +1,101 @@
+.shape-matcher-game {
+  min-height: 100vh;
+  background: var(--blue-bg);
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.matcher-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #f1f2f6;
+  padding: 40px;
+}
+
+.shapes-grid {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Silhouettes */
+.silhouettes-area {
+  padding: 30px;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+  border: 4px dashed var(--gray-300);
+}
+
+.silhouette-dropzone {
+  width: 100px;
+  height: 100px;
+  background: var(--gray-100);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.shadow-shape {
+  font-size: 50px;
+  filter: brightness(0) opacity(0.1);
+  pointer-events: none;
+}
+
+.silhouette-dropzone.drag-over {
+  transform: scale(1.1);
+  background: var(--teal-light);
+  border-radius: 30px; /* Morph shape slightly to invite drop */
+}
+
+.silhouette-dropzone.matched {
+  background: white;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  border-radius: 20px;
+}
+
+.matched-item {
+  font-size: 60px;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+}
+
+/* Draggables */
+.draggables-area {
+  padding: 20px;
+}
+
+.draggable-shape {
+  width: 100px;
+  height: 100px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  user-select: none;
+  touch-action: none;
+  color: white;
+}
+
+.draggable-shape.dragging {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+@media (max-width: 600px) {
+  .matcher-layout { padding: 20px; gap: 40px; }
+  .silhouettes-area { padding: 16px; }
+  .shapes-grid { gap: 16px; }
+  .silhouette-dropzone, .draggable-shape { width: 70px; height: 70px; }
+  .shadow-shape { font-size: 40px; }
+  .draggable-shape, .matched-item { font-size: 40px; }
+}
