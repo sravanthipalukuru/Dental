@@ -39,9 +39,35 @@ const getDefaultProgress = (userId) => ({
 });
 
 async function sendOtpEmail(email, otpCode) {
-  // Bypassing real email sending to prevent getting stuck on free hosting
-  console.log(`\n\x1b[36m[EMAIL BYPASS] Pretending to send email to ${email} with OTP: ${otpCode}\x1b[0m\n`);
-  return true;
+  try {
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Happy Dental App 🦷" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Your OTP Login Code",
+      html: `
+        <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; text-align: center;">
+          <h1 style="color: #0d9488;">Welcome Back!</h1>
+          <p style="font-size: 16px; color: #4b5563;">You requested a secure code to log into the Happy Dental app.</p>
+          <div style="background-color: #f0fdfa; border: 2px solid #5eead4; border-radius: 12px; padding: 20px; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0f766e; margin: 30px 0;">
+            ${otpCode}
+          </div>
+          <p style="font-size: 14px; color: #9ca3af;">This code will expire in 5 minutes.</p>
+        </div>
+      `,
+    });
+
+    console.log(`\n\x1b[36m📧 REAL EMAIL SENT to ${email}\x1b[0m\n`);
+  } catch (err) {
+    console.error("Failed to send real email. Did you set EMAIL_USER and EMAIL_PASS?", err);
+  }
 }
 
 // POST to send OTP
@@ -50,8 +76,8 @@ app.post('/api/auth/send-otp', async (req, res) => {
     const { username } = req.body;
     if (!username) return res.status(400).json({ message: 'Username required' });
     
-    // Use a hardcoded OTP for easy testing
-    const otpCode = "123456";
+    // Generate random 6 digit OTP
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
     
     // Save to DB (override previous if exists)
     await Otp.findOneAndUpdate(
