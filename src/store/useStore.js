@@ -193,7 +193,9 @@ export const useStore = create((set, get) => ({
           gameLevels: data.gameLevels || {},
           coins: data.coins,
           xp: data.xp,
-          level: data.level
+          level: data.level,
+          badges: data.badges || get().badges,
+          gamesCompleted: data.gamesCompleted || get().gamesCompleted
         });
         return true;
       }

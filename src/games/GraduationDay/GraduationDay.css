@@ -1,394 +1,605 @@
-.graduation-day-game {
-  min-height: 100vh;
-  background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); /* Deep luxurious gradient */
-  padding-top: var(--nav-height);
-  padding-bottom: 40px;
+.graduation-day-container {
   display: flex;
   flex-direction: column;
-  color: #f1f5f9;
-  position: relative;
+  height: 100vh;
   overflow: hidden;
+  background-color: var(--blue-bg);
 }
 
-.game-header {
-  height: var(--nav-height);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-}
-
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  color: #94a3b8;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.2s ease;
-}
-
-.back-btn:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.game-container {
+.graduation-day-container .game-content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding-top: 40px;
+  padding: 2rem;
+  overflow-y: auto;
   position: relative;
-  z-index: 2;
 }
 
-/* Glassmorphic Game Cards */
-.game-card.card {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-lg);
-  padding: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-.academy-badge {
-  font-size: 80px;
-  line-height: 1;
-  display: inline-block;
-  animation: float 4s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
-.game-title {
-  color: #fff;
+/* Common Buttons */
+.graduation-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--teal) 0%, var(--baby-blue) 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 2rem;
   font-family: 'Fredoka One', cursive;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+  transition: all 0.3s ease;
 }
 
-.game-subtitle {
-  color: #94a3b8;
-  font-size: 1.1rem;
+.graduation-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+}
+
+.graduation-btn:active {
+  transform: translateY(1px);
+}
+
+.graduation-btn:disabled {
+  background: var(--gray-400);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.graduation-btn.secondary {
+  background: white;
+  color: var(--teal);
+  border: 2px solid var(--teal);
+}
+
+/* Intro Screen */
+.graduation-intro {
+  text-align: center;
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  max-width: 600px;
+  width: 100%;
+}
+
+.trophy-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2rem;
+  color: var(--yellow);
+}
+
+.sparkles {
+  position: absolute;
+  color: var(--yellow);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.sparkles.top-left {
+  top: -10px;
+  left: -20px;
+}
+
+.sparkles.bottom-right {
+  bottom: 0;
+  right: -20px;
+  animation-delay: 1s;
+}
+
+.graduation-intro h2 {
+  font-size: 2.5rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.graduation-intro p {
+  color: var(--gray-600);
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
   line-height: 1.6;
 }
 
-/* Requirement Box */
-.requirement-box {
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-md);
-  padding: 20px;
-}
-
-/* Meters */
-.meter-bg {
-  width: 100%;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-}
-
-.meter-fill {
-  height: 100%;
-  border-radius: var(--radius-full);
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.bg-teal {
-  background: var(--grad-green);
-}
-
-.bg-yellow {
-  background: var(--grad-yellow);
-}
-
-/* Quiz Option Buttons */
-.options-list {
+.challenge-steps {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
 }
 
-.option-btn {
+.step {
   display: flex;
   align-items: center;
-  width: 100%;
-  padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 2px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  color: #e2e8f0;
-  text-align: left;
-  font-size: 1.05rem;
+  gap: 0.5rem;
   font-weight: 600;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  color: var(--dark);
+  background: var(--gray-100);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
 }
 
-.option-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--teal);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.option-btn.selected {
-  background: rgba(78, 205, 196, 0.1);
-  border-color: var(--teal);
-  color: #fff;
-}
-
-.option-btn.correct {
-  background: rgba(34, 197, 94, 0.15);
-  border-color: #22c55e;
-  color: #fff;
-}
-
-.option-btn.incorrect {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: #ef4444;
-  color: #fff;
-}
-
-.option-btn.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.option-label {
+.step span {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: #94a3b8;
-  margin-right: 16px;
+  width: 24px;
+  height: 24px;
+  background: var(--teal);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.9rem;
 }
 
-.option-btn.correct .option-label {
-  background: #22c55e;
-  color: #fff;
+/* Quiz Screen */
+.graduation-quiz {
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
 }
 
-.option-btn.incorrect .option-label {
-  background: #ef4444;
-  color: #fff;
-}
-
-.option-text {
-  flex: 1;
-}
-
-.check-icon, .x-icon {
-  margin-left: auto;
-}
-
-/* Sorter Card and Buttons */
-.food-badge {
-  font-size: 64px;
-}
-
-.food-name {
-  color: #fff;
-  font-family: 'Fredoka One', cursive;
+.quiz-progress {
+  text-align: center;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.sort-btn {
-  background: rgba(255, 255, 255, 0.03);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.quiz-question {
+  text-align: center;
+  font-size: 1.8rem;
+  color: var(--dark);
+  margin-bottom: 2.5rem;
+  line-height: 1.4;
 }
 
-.sort-btn.healthy:hover:not(:disabled) {
-  background: rgba(34, 197, 94, 0.08);
-  border-color: #22c55e;
-  transform: scale(1.03);
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.sort-btn.unhealthy:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.08);
-  border-color: #ef4444;
-  transform: scale(1.03);
-}
-
-.sort-btn.disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-/* Diploma Styles (Screen layout) */
-.diploma-container {
+.quiz-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  border: 2px solid var(--gray-200);
+  border-radius: 15px;
   background: white;
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-  max-width: 720px;
-  margin: 0 auto;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Nunito', sans-serif;
 }
 
-.diploma {
-  border: 8px double #d4af37; /* Double Gold border */
+.quiz-option:hover:not(.disabled) {
+  border-color: var(--teal);
+  background: var(--gray-50);
+}
+
+.quiz-option.correct {
+  background: rgba(0, 191, 165, 0.1);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.quiz-option.incorrect {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: var(--coral);
+  color: var(--coral);
+}
+
+.quiz-option.disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.quiz-explanation {
+  background: var(--gray-50);
+  padding: 1.5rem;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.quiz-explanation p {
+  color: var(--dark);
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Food Sorting Game */
+.graduation-food-sort {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.graduation-food-sort h2 {
+  font-size: 2rem;
+  color: var(--dark);
+  margin-bottom: 0.5rem;
+}
+
+.graduation-food-sort p {
+  color: var(--gray-600);
+  margin-bottom: 2rem;
+}
+
+.food-sorting-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 1rem;
+  min-height: 300px;
+}
+
+.drop-zone {
+  flex: 1;
+  border: 3px dashed var(--gray-200);
+  border-radius: 20px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.drop-zone.healthy-zone {
+  background: rgba(0, 191, 165, 0.05);
+}
+
+.drop-zone.healthy-zone:hover {
+  background: rgba(0, 191, 165, 0.1);
+  border-color: var(--teal);
+}
+
+.drop-zone.cavity-zone {
+  background: rgba(255, 82, 82, 0.05);
+}
+
+.drop-zone.cavity-zone:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: var(--coral);
+}
+
+.zone-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.drop-zone h3 {
+  font-size: 1.2rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.sorted-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.sorted-emoji {
+  font-size: 2rem;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.food-pool {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--gray-100);
+  border-radius: 20px;
+}
+
+.draggable-food {
+  font-size: 3.5rem;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.draggable-food:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+.shake-animation {
+  animation: shake 0.5s;
+}
+
+/* Certificate Setup */
+.certificate-setup {
+  text-align: center;
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  max-width: 500px;
+  width: 100%;
+}
+
+.certificate-setup h2 {
+  font-size: 2.5rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.certificate-setup p {
+  color: var(--gray-600);
+  margin-bottom: 2rem;
+}
+
+.name-input-group {
+  margin-bottom: 2rem;
+}
+
+.name-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1.2rem;
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+}
+
+.name-input:focus {
+  border-color: var(--teal);
+}
+
+/* Celebration & Certificate */
+.graduation-celebration {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.certificate-wrapper {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  max-width: 800px;
+  width: 100%;
+}
+
+.certificate {
+  border: 15px solid var(--teal);
+  padding: 5px;
   background: #fdfbf7;
-  padding: 40px 32px;
-  color: #1e293b;
+}
+
+.certificate-border {
+  border: 2px dashed var(--teal);
+  padding: 3rem;
   text-align: center;
   position: relative;
-  border-radius: 4px;
 }
 
-.diploma-inner {
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  padding: 24px;
-  height: 100%;
-}
-
-.font-serif {
-  font-family: 'Georgia', Garamond, 'Times New Roman', serif;
-}
-
-.font-script {
-  font-family: 'Brush Script MT', cursive, 'Snell Roundhand', sans-serif;
-  font-size: 2.5rem;
-}
-
-.student-name-container {
-  margin: 20px 0;
-  border-bottom: 2px solid #e2e8f0;
-  display: inline-block;
-  padding: 0 30px;
-}
-
-.seal-outer {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  background: #d4af37;
+.certificate-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
-  border: 2px dashed #fff;
-  animation: rotateSeal 20s linear infinite;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.certificate-header h1 {
+  font-size: 2.8rem;
+  color: var(--teal-dark);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+  font-family: 'Fredoka One', cursive;
+}
+
+.cert-icon {
+  color: var(--yellow);
+}
+
+.cert-subtitle {
+  font-size: 1.2rem;
+  color: var(--gray-600);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  font-family: 'Georgia', serif;
+}
+
+.cert-name {
+  font-size: 3.5rem;
+  color: var(--teal);
+  margin-bottom: 2rem;
+  font-family: 'Dancing Script', cursive, serif;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  display: inline-block;
+  min-width: 300px;
+}
+
+.cert-body {
+  font-size: 1.1rem;
+  color: var(--dark);
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  font-family: 'Georgia', serif;
+}
+
+.cert-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 2rem;
+}
+
+.signature-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 200px;
+}
+
+.signature-font {
+  font-family: 'Dancing Script', cursive, serif;
+  font-size: 2rem;
+  color: var(--teal-dark);
+  border-bottom: 1px solid var(--dark);
+  width: 100%;
+}
+
+.date-font {
+  font-family: 'Georgia', serif;
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--dark);
+  width: 100%;
+  padding-bottom: 0.5rem;
+}
+
+.signature-line span {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.seal {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .seal-inner {
-  font-size: 24px;
-  color: white;
-  line-height: 1;
-}
-
-@keyframes rotateSeal {
-  100% { transform: rotate(360deg); }
-}
-
-/* Credits styling */
-.credits-view {
-  height: calc(100vh - var(--nav-height) - 100px);
-  position: relative;
-  overflow: hidden;
+  width: 100px;
+  height: 100px;
+  background: var(--yellow);
+  border-radius: 50%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  padding-top: 10px;
-  pointer-events: auto;
+  color: white;
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+  border: 4px dashed white;
 }
 
-.credits-roll {
-  width: 100%;
-  max-width: 600px;
-  text-align: center;
+.seal-inner span {
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-top: 0.2rem;
 }
 
-.credit-block {
-  margin-bottom: 40px;
+.celebration-actions {
+  display: flex;
+  gap: 1rem;
 }
 
-/* Print Specific Rules (Crucial for the Diploma) */
+/* Animations */
+@keyframes popIn {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px) rotate(-5deg); }
+  50% { transform: translateX(5px) rotate(5deg); }
+  75% { transform: translateX(-5px) rotate(-5deg); }
+  100% { transform: translateX(0); }
+}
+
+/* Print Styles */
 @media print {
-  body {
-    background: white !important;
-    color: black !important;
+  body * {
+    visibility: hidden;
   }
   
-  .print\:hidden,
-  header,
-  .game-header,
-  .back-btn,
-  .requirement-box,
-  .name-form,
-  button,
-  .btn {
+  .certificate-wrapper, .certificate-wrapper * {
+    visibility: visible;
+  }
+  
+  .certificate-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .certificate {
+    border-width: 10px;
+  }
+
+  .no-print {
     display: none !important;
   }
-  
-  .graduation-day-game {
-    background: none !important;
-    padding: 0 !important;
-    min-height: auto !important;
-  }
-  
-  .container,
-  .ceremony-view-container {
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  
-  .diploma-container {
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-    background: white !important;
-  }
-  
-  .diploma {
-    border-width: 12px !important;
-    background: #fdfbf7 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    box-sizing: border-box;
-    page-break-inside: avoid;
-  }
 }
 
-/* Responsive fixes */
-@media (max-width: 640px) {
-  .game-card.card {
-    padding: 24px 16px;
+/* Responsive */
+@media (max-width: 768px) {
+  .food-sorting-area {
+    flex-direction: column;
   }
-  .diploma {
-    padding: 24px 16px;
+
+  .certificate-header h1 {
+    font-size: 1.8rem;
   }
-  .diploma h1 {
-    font-size: 1.5rem;
+
+  .cert-icon {
+    width: 40px;
+    height: 40px;
   }
-  .diploma-footer {
+
+  .cert-name {
+    font-size: 2.5rem;
+    min-width: 200px;
+  }
+
+  .cert-footer {
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 2rem;
+  }
+
+  .seal {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    margin: 2rem 0;
   }
 }
