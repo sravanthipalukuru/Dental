@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
-import { Bell, Heart, Shield, Award } from 'lucide-react';
+import { Bell, Heart, Shield, Award, Star, CheckCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import './ParentPortal.css';
 
@@ -16,9 +17,43 @@ export default function ParentPortal() {
   const { anxietyScore, readinessScore, gamesCompleted, level, displayName } = useStore();
   const childName = displayName || 'Your Child';
   const anxietyReduction = Math.max(0, (50 - anxietyScore) * 2);
-  
-  // Use current live score for latest data point
   const liveData = [...anxietyData, { session: 'Current', score: anxietyScore }];
+
+  // Review state
+  const [rating, setRating] = useState(0);
+  const [hovered, setHovered] = useState(0);
+  const [reviewText, setReviewText] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+
+  const handleSubmitReview = async () => {
+    if (rating === 0) return;
+    setSubmitting(true);
+    setReviewError('');
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          doctorName: 'Dr. Sarah Smith',
+          reviewerUserId: displayName || 'Anonymous',
+          rating,
+          comment: reviewText
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSubmitted(true);
+      } else {
+        setReviewError('Failed to save review. Please try again.');
+      }
+    } catch (err) {
+      setReviewError('Network error. Please check your connection.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="parent-portal section-pad">
@@ -119,21 +154,61 @@ export default function ParentPortal() {
             className="card review-card col-span-2"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
           >
-            <div className="flex flex-col items-center p-4">
-              <div className="text-6xl mb-2">👨‍⚕️</div>
-              <h3 className="text-xl font-bold mb-4">Dr. Sarah Smith</h3>
-              <div className="flex gap-2 mb-6">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} size={32} className="text-gray-300 hover:text-yellow-400 cursor-pointer transition-colors" />
-                ))}
+            {submitted ? (
+              <div className="review-success">
+                <CheckCircle size={52} color="var(--teal)" />
+                <h3>Thank You!</h3>
+                <p>Your review for Dr. Sarah Smith has been submitted.</p>
+                <div className="review-stars-display">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} size={24} fill={s <= rating ? '#FFD700' : 'none'} color={s <= rating ? '#FFD700' : 'var(--gray-400)'} />
+                  ))}
+                </div>
+                <button className="btn btn-outline review-again-btn" onClick={() => { setSubmitted(false); setRating(0); setReviewText(''); }}>
+                  Write Another Review
+                </button>
               </div>
-              <textarea 
-                className="w-full p-4 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gray-50"
-                rows="3"
-                placeholder="Share your experience... (optional)"
-              ></textarea>
-              <button className="btn btn-primary mt-4 w-full">Submit Review</button>
-            </div>
+            ) : (
+              <div className="review-body">
+                <div className="review-doctor-icon">👨‍⚕️</div>
+                <h3 className="review-doctor-name">Dr. Sarah Smith</h3>
+                <p className="review-hint">How was your experience?</p>
+                <div className="review-stars">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      size={38}
+                      fill={(hovered || rating) >= star ? '#FFD700' : 'none'}
+                      color={(hovered || rating) >= star ? '#FFD700' : '#BBBBBB'}
+                      className="review-star"
+                      onMouseEnter={() => setHovered(star)}
+                      onMouseLeave={() => setHovered(0)}
+                      onClick={() => setRating(star)}
+                    />
+                  ))}
+                </div>
+                {rating > 0 && (
+                  <p className="review-rating-label">
+                    {['', '😞 Poor', '😐 Fair', '🙂 Good', '😊 Great', '🤩 Excellent!'][rating]}
+                  </p>
+                )}
+                <textarea
+                  className="review-textarea"
+                  rows="3"
+                  placeholder="Share your experience... (optional)"
+                  value={reviewText}
+                  onChange={e => setReviewText(e.target.value)}
+                />
+                <button
+                  className={`btn btn-primary review-submit-btn ${(rating === 0 || submitting) ? 'review-submit-disabled' : ''}`}
+                  onClick={handleSubmitReview}
+                  disabled={rating === 0 || submitting}
+                >
+                  {submitting ? '⏳ Saving...' : rating === 0 ? 'Select a Rating First ⭐' : 'Submit Review ✓'}
+                </button>
+                {reviewError && <p style={{ color: 'var(--pink)', fontSize: 13, marginTop: 4 }}>{reviewError}</p>}
+              </div>
+            )}
           </motion.div>
         </div>
       </div>

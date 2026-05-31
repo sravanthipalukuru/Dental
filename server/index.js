@@ -3,6 +3,9 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import Progress from './models/Progress.js';
 import Chat from './models/Chat.js';
+import Otp from './models/Otp.js';
+import Review from './models/Review.js';
+import nodemailer from 'nodemailer';
 
 const app = express();
 app.use(cors());
@@ -11,9 +14,9 @@ app.use(express.json());
 const PORT = 54321;
 
 // MongoDB Connection
-const MONGO_URI = "mongodb+srv://kaveens555_db_user:dental@cluster0.prqmrhr.mongodb.net/?appName=Cluster0";
+const MONGO_URI = "mongodb://kaveens555_db_user:dental@ac-zep0sdb-shard-00-00.prqmrhr.mongodb.net:27017,ac-zep0sdb-shard-00-01.prqmrhr.mongodb.net:27017,ac-zep0sdb-shard-00-02.prqmrhr.mongodb.net:27017/?ssl=true&replicaSet=atlas-kkm6qm-shard-0&authSource=admin&appName=Cluster0";
 
-mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI, { family: 4 })
   .then(() => console.log('Connected to MongoDB Cloud'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
@@ -33,6 +36,95 @@ const getDefaultProgress = (userId) => ({
   birthday: null,
   purchasedItems: [],
   gameLevels: {}
+});
+
+async function sendOtpEmail(email, otpCode) {
+  try {
+    const toEmail = email.includes('@') ? email : `${email}@testuser.com`;
+    
+    // Generate test SMTP service account from ethereal.email
+    let testAccount = await nodemailer.createTestAccount();
+
+    let transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: testAccount.user, // generated ethereal user
+        pass: testAccount.pass, // generated ethereal password
+      },
+    });
+
+    let info = await transporter.sendMail({
+      from: '"Happy Dental App 🦷" <auth@happydental.test>',
+      to: toEmail, // Use the provided username/email
+      subject: "Your OTP Login Code",
+      html: `
+        <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; text-align: center;">
+          <h1 style="color: #0d9488;">Hello!</h1>
+          <p style="font-size: 16px; color: #4b5563;">You requested a secure code to log into the Happy Dental app.</p>
+          <div style="background-color: #f0fdfa; border: 2px solid #5eead4; border-radius: 12px; padding: 20px; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0f766e; margin: 30px 0;">
+            ${otpCode}
+          </div>
+          <p style="font-size: 14px; color: #9ca3af;">This code will expire in 5 minutes.</p>
+        </div>
+      `,
+    });
+
+    console.log(`\n\x1b[36m📧 REAL EMAIL SENT (via Ethereal testing)!`);
+    console.log(`Click this URL to view the email: ${nodemailer.getTestMessageUrl(info)}\x1b[0m\n`);
+  } catch (err) {
+    console.error("Failed to send test email", err);
+  }
+}
+
+// POST to send OTP
+app.post('/api/auth/send-otp', async (req, res) => {
+  try {
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ message: 'Username required' });
+    
+    // Generate 6 digit OTP
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Save to DB (override previous if exists)
+    await Otp.findOneAndUpdate(
+      { username },
+      { otp: otpCode, createdAt: new Date() },
+      { upsert: true, new: true }
+    );
+    
+    // PRINT to console for dev mode
+    console.log(`\n\x1b[32m====================================`);
+    console.log(`🔐 OTP for ${username}: ${otpCode}`);
+    console.log(`====================================\x1b[0m\n`);
+    
+    // SEND via Nodemailer Ethereal
+    await sendOtpEmail(username, otpCode);
+    
+    res.json({ success: true, message: 'OTP stored and email sent.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// POST to verify OTP
+app.post('/api/auth/verify-otp', async (req, res) => {
+  try {
+    const { username, otp } = req.body;
+    
+    const record = await Otp.findOne({ username, otp });
+    if (!record) {
+      return res.status(401).json({ success: false, message: 'Invalid or expired OTP' });
+    }
+    
+    // Delete OTP after successful use
+    await Otp.deleteOne({ _id: record._id });
+    
+    res.json({ success: true, message: 'Login successful' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // GET user progress
@@ -195,6 +287,13 @@ app.post('/api/progress/:userId/complete-level', async (req, res) => {
       progress.coins += 50; // Give 50 coins per level
       progress.xp += 20;    // Give 20 XP per level
       progress.level = Math.floor(progress.xp / 100) + 1;
+
+      // Award Graduation badge if completing Graduation Day game
+      if (String(gameId) === '20') {
+        if (!progress.badges.includes('Super Smile Graduate')) {
+          progress.badges.push('Super Smile Graduate');
+        }
+      }
     }
     
     await progress.save();
@@ -247,6 +346,34 @@ app.post('/api/chat/:userId', async (req, res) => {
     res.json(chat);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+// POST - Save a new review
+app.post('/api/reviews', async (req, res) => {
+  try {
+    const { doctorName, reviewerUserId, rating, comment } = req.body;
+    if (!doctorName || !reviewerUserId || !rating) {
+      return res.status(400).json({ message: 'doctorName, reviewerUserId, and rating are required.' });
+    }
+    const review = new Review({ doctorName, reviewerUserId, rating, comment });
+    await review.save();
+    res.json({ success: true, review });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET - Fetch all reviews for a specific doctor
+app.get('/api/reviews/:doctorName', async (req, res) => {
+  try {
+    const reviews = await Review.find({ doctorName: req.params.doctorName }).sort({ createdAt: -1 });
+    const avgRating = reviews.length
+      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+      : null;
+    res.json({ reviews, avgRating, totalReviews: reviews.length });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

@@ -28,6 +28,11 @@ export default function Navbar() {
 
   useEffect(() => setMenuOpen(false), [location]);
 
+  // Hide global navbar on all game screens to avoid layout overlap
+  if (location.pathname.startsWith('/game/')) {
+    return null;
+  }
+
   return (
     <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
@@ -41,7 +46,9 @@ export default function Navbar() {
 
         {/* Desktop links */}
         <ul className="navbar__links">
-          {navLinks.map(({ path, label, emoji }) => (
+          {navLinks
+            .filter(link => userId || link.path === '/')
+            .map(({ path, label, emoji }) => (
             <li key={path}>
               <Link
                 to={path}
@@ -71,7 +78,9 @@ export default function Navbar() {
 
       {/* Mobile drawer */}
       <div className={`navbar__drawer ${menuOpen ? 'navbar__drawer--open' : ''}`}>
-        {navLinks.map(({ path, label, emoji }) => (
+        {navLinks
+          .filter(link => userId || link.path === '/')
+          .map(({ path, label, emoji }) => (
           <Link
             key={path}
             to={path}
@@ -80,9 +89,11 @@ export default function Navbar() {
             {emoji} {label}
           </Link>
         ))}
-        <Link to="/child" className="btn btn-primary" style={{ marginTop: 12 }}>
-          Start Adventure ✨
-        </Link>
+        {userId && (
+          <Link to="/child" className="btn btn-primary" style={{ marginTop: 12 }}>
+            Start Adventure ✨
+          </Link>
+        )}
       </div>
     </nav>
   );

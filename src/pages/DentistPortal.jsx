@@ -8,10 +8,12 @@ export default function DentistPortal() {
   const [isLoading, setIsLoading] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteUsername, setInviteUsername] = useState('');
-  const [inviteStatus, setInviteStatus] = useState(null); // null | 'loading' | 'success' | 'error'
+  const [inviteStatus, setInviteStatus] = useState(null);
   const [inviteError, setInviteError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPatient, setSelectedPatient] = useState(null); // for View Profile
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [avgRating, setAvgRating] = useState(null);
 
   const fetchPatients = () => {
     fetch('/api/patients')
@@ -20,7 +22,14 @@ export default function DentistPortal() {
       .catch(() => setIsLoading(false));
   };
 
-  useEffect(() => { fetchPatients(); }, []);
+  const fetchReviews = () => {
+    fetch('/api/reviews/Dr. Sarah Smith')
+      .then(res => res.json())
+      .then(data => { setReviews(data.reviews || []); setAvgRating(data.avgRating); })
+      .catch(() => {});
+  };
+
+  useEffect(() => { fetchPatients(); fetchReviews(); }, []);
 
   const totalPatients = patientsList.length;
   const avgReduction = totalPatients > 0
@@ -229,6 +238,47 @@ export default function DentistPortal() {
               </table>
             )}
           </div>
+        </motion.div>
+
+        {/* ── PATIENT REVIEWS ── */}
+        <motion.div className="card" style={{ marginTop: 24 }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <div className="card-header" style={{ marginBottom: 16 }}>
+            <h3>Patient Reviews for Dr. Sarah Smith</h3>
+            {avgRating && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                {[1,2,3,4,5].map(s => (
+                  <Star key={s} size={18} fill={s <= Math.round(avgRating) ? '#FFD700' : 'none'} color={s <= Math.round(avgRating) ? '#FFD700' : '#BBBBBB'} />
+                ))}
+                <span style={{ fontWeight: 700, fontSize: 15 }}>{avgRating} / 5</span>
+                <span style={{ color: 'var(--gray-600)', fontSize: 13 }}>({reviews.length} {reviews.length === 1 ? 'review' : 'reviews'})</span>
+              </div>
+            )}
+          </div>
+
+          {reviews.length === 0 ? (
+            <p style={{ color: 'var(--gray-600)', textAlign: 'center', padding: '20px 0' }}>No reviews yet. Reviews from parents will appear here.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {reviews.map((r) => (
+                <div key={r._id} style={{ padding: '16px', background: 'var(--gray-50)', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--teal)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {[1,2,3,4,5].map(s => (
+                        <Star key={s} size={14} fill={s <= r.rating ? '#FFD700' : 'none'} color={s <= r.rating ? '#FFD700' : '#BBBBBB'} />
+                      ))}
+                    </div>
+                    <span style={{ fontSize: 12, color: 'var(--gray-400)' }}>
+                      {new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: 13, color: 'var(--gray-600)', fontStyle: r.comment ? 'normal' : 'italic' }}>
+                    {r.comment || 'No comment left.'}
+                  </p>
+                  <p style={{ margin: '6px 0 0', fontSize: 12, color: 'var(--gray-400)' }}>— {r.reviewerUserId}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
 

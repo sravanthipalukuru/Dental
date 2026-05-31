@@ -27,7 +27,7 @@ export default function GamesLibrary() {
       <div className="container">
         <div className="text-center mb-48">
           <h1 style={{fontSize: 40, marginBottom: 16}}>Games Library</h1>
-          <p className="text-gray" style={{fontSize: 18}}>Play all 15 mini-games to conquer your fears and become a Smile Champion!</p>
+          <p className="text-gray" style={{fontSize: 18}}>Play all {allGames.length} games to conquer your fears and become a Smile Champion!</p>
         </div>
 
         <div style={{display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40}}>
