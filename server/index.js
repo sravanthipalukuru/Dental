@@ -39,43 +39,9 @@ const getDefaultProgress = (userId) => ({
 });
 
 async function sendOtpEmail(email, otpCode) {
-  try {
-    const toEmail = email.includes('@') ? email : `${email}@testuser.com`;
-    
-    // Generate test SMTP service account from ethereal.email
-    let testAccount = await nodemailer.createTestAccount();
-
-    let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
-      },
-    });
-
-    let info = await transporter.sendMail({
-      from: '"Happy Dental App 🦷" <auth@happydental.test>',
-      to: toEmail, // Use the provided username/email
-      subject: "Your OTP Login Code",
-      html: `
-        <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; text-align: center;">
-          <h1 style="color: #0d9488;">Hello!</h1>
-          <p style="font-size: 16px; color: #4b5563;">You requested a secure code to log into the Happy Dental app.</p>
-          <div style="background-color: #f0fdfa; border: 2px solid #5eead4; border-radius: 12px; padding: 20px; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0f766e; margin: 30px 0;">
-            ${otpCode}
-          </div>
-          <p style="font-size: 14px; color: #9ca3af;">This code will expire in 5 minutes.</p>
-        </div>
-      `,
-    });
-
-    console.log(`\n\x1b[36m📧 REAL EMAIL SENT (via Ethereal testing)!`);
-    console.log(`Click this URL to view the email: ${nodemailer.getTestMessageUrl(info)}\x1b[0m\n`);
-  } catch (err) {
-    console.error("Failed to send test email", err);
-  }
+  // Bypassing real email sending to prevent getting stuck on free hosting
+  console.log(`\n\x1b[36m[EMAIL BYPASS] Pretending to send email to ${email} with OTP: ${otpCode}\x1b[0m\n`);
+  return true;
 }
 
 // POST to send OTP
@@ -84,8 +50,8 @@ app.post('/api/auth/send-otp', async (req, res) => {
     const { username } = req.body;
     if (!username) return res.status(400).json({ message: 'Username required' });
     
-    // Generate 6 digit OTP
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    // Use a hardcoded OTP for easy testing
+    const otpCode = "123456";
     
     // Save to DB (override previous if exists)
     await Otp.findOneAndUpdate(
