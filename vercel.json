@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:match*",
+      "destination": "https://dental-backend-l6bc.onrender.com/api/:match*"
+    }
+  ]
+}
