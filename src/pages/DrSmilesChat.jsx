@@ -11,16 +11,16 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 const model = genAI ? genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
-  systemInstruction: "You are Dr. Smiles, a fun, friendly dental doctor who always cares about the user's teeth. You must speak in a fun, caring tone. Keep responses very short and concise (small small content) so they fit easily in a mobile chat bubble."
+  systemInstruction: "You are Dr. Smiles, an incredibly fun, magical, and super caring dental bear! Your absolute favorite thing in the whole world is taking care of teeth! You speak in an enthusiastic, goofy, and super friendly tone. You frequently recommend playing our awesome HappyDental mini-games (like 'Clinic Explorer', 'Tooth Defender', or 'Sugar Bug Blaster') to help kids learn and feel super brave! Keep your responses very short, punchy, and use lots of fun emojis so they fit easily in a mobile chat bubble."
 }) : null;
 
 const MOCK_RESPONSES = [
-  { keywords: ['hurt', 'pain', 'scared', 'afraid'], text: "I understand you might be feeling a bit scared. It's completely normal! But I promise, I use special magic tools that just tickle your teeth. We can take breaks whenever you want. You are in control!" },
-  { keywords: ['needle', 'shot', 'injection'], text: "Ah, the sleepy juice! We use a tiny magic wand to put the tooth to sleep so it doesn't feel anything while we wash away the sugar bugs. You'll just feel a little pinch, like a mosquito bite, and then... asleep!" },
-  { keywords: ['drill', 'noise', 'loud'], text: "That buzzy sound is my special tooth-tickler! It helps wash away the sticky sugar bugs. We can even give you cool headphones to listen to your favorite music while it buzzes." },
-  { keywords: ['cavity', 'bug', 'sugar'], text: "Sugar bugs love to hide in tiny caves in our teeth. We just need to sweep them out and patch the cave with a super strong, shiny star so they can't come back!" },
-  { keywords: ['hello', 'hi', 'hey'], text: "Hello there! I'm Dr. Smiles 🐻. Are you ready for a fun adventure today? Do you have any questions about your checkup?" },
-  { keywords: ['default'], text: "That's a great question! At the clinic, we explain everything before we do it. Would you like to play the 'Clinic Explorer' game to see what it looks like?" }
+  { keywords: ['hurt', 'pain', 'scared', 'afraid'], text: "Oh no, please don't be scared! 🐻 I have a super secret trick: my tools just tickle your teeth! 🪄 To see how brave you can be, you should totally play 'Tooth Defender' in our Games section! 🎮" },
+  { keywords: ['needle', 'shot', 'injection'], text: "Ah, the sleepy juice! 💧 We just put the tooth to sleep so it snoozes while we wash away the bugs. It's like a tiny mosquito bite! Want to see how it works? Try playing 'Clinic Explorer'! 🏥✨" },
+  { keywords: ['drill', 'noise', 'loud'], text: "That buzzy sound is my special tooth-tickler! Bzzzz! 🐝 It washes away the sticky sugar bugs. You can practice blasting bugs in the 'Sugar Bug Blaster' game! 🎯" },
+  { keywords: ['cavity', 'bug', 'sugar'], text: "Yuck, sugar bugs! 🦠 They love to hide in tiny caves in our teeth. We just sweep them out and patch the cave with a shiny star! ⭐ Go play 'Sugar Bug Blaster' to help me catch them! 🦸‍♂️" },
+  { keywords: ['hello', 'hi', 'hey', 'how are you'], text: "Hello there! I'm Dr. Smiles 🐻, and I'm doing SUPER great! Are you ready for a fun adventure today? I highly recommend checking out our cool Games to start having fun! 🎮✨" },
+  { keywords: ['default'], text: "That's a fantastic question! 🌟 I love talking about teeth! Want to explore the clinic yourself and learn more? Go play the 'Clinic Explorer' game right now! 🏥🚀" }
 ];
 
 export default function DrSmilesChat() {
