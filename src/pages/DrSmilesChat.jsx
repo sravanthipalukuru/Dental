@@ -125,7 +125,7 @@ export default function DrSmilesChat() {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "llama3-8b-8192", // Fast and capable open source model
+            model: "llama-3.1-8b-instant", // Updated to the latest supported Groq model
             messages: apiMessages,
             max_tokens: 150
           })
