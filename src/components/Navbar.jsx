@@ -17,8 +17,14 @@ export default function Navbar() {
   const location = useLocation();
   const userId = useStore(state => state.userId);
   const avatar = useStore(state => state.avatar);
+  const displayName = useStore(state => state.displayName);
   const [scrolled, setScrolled]   = useState(false);
   const [menuOpen, setMenuOpen]   = useState(false);
+
+  // Show display name, or first part of email before @, capitalized
+  const friendlyName = displayName && displayName !== userId
+    ? displayName.split(' ')[0]
+    : (userId ? userId.split('@')[0].slice(0, 10) : '');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -65,8 +71,8 @@ export default function Navbar() {
         <Link to={userId ? "/profile" : "/login"} className="btn btn-primary navbar__cta">
           {userId ? (
             <>
-              <span style={{ fontSize: '1.3em', lineHeight: 1 }}>{avatar}</span>
-              <span className="navbar__user-id">{userId}</span>
+              <span style={{ fontSize: '1.2em', lineHeight: 1 }}>{avatar}</span>
+              <span className="navbar__user-id">{friendlyName}</span>
             </>
           ) : (
             "Login"
