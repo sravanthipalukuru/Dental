@@ -15,13 +15,26 @@ const model = genAI ? genAI.getGenerativeModel({
 }) : null;
 
 const MOCK_RESPONSES = [
-  { keywords: ['hurt', 'pain', 'scared', 'afraid'], text: "Oh no, please don't be scared! 🐻 I have a super secret trick: my tools just tickle your teeth! 🪄 To see how brave you can be, you should totally play 'Tooth Defender' in our Games section! 🎮" },
-  { keywords: ['needle', 'shot', 'injection'], text: "Ah, the sleepy juice! 💧 We just put the tooth to sleep so it snoozes while we wash away the bugs. It's like a tiny mosquito bite! Want to see how it works? Try playing 'Clinic Explorer'! 🏥✨" },
-  { keywords: ['drill', 'noise', 'loud'], text: "That buzzy sound is my special tooth-tickler! Bzzzz! 🐝 It washes away the sticky sugar bugs. You can practice blasting bugs in the 'Sugar Bug Blaster' game! 🎯" },
-  { keywords: ['cavity', 'bug', 'sugar'], text: "Yuck, sugar bugs! 🦠 They love to hide in tiny caves in our teeth. We just sweep them out and patch the cave with a shiny star! ⭐ Go play 'Sugar Bug Blaster' to help me catch them! 🦸‍♂️" },
-  { keywords: ['hello', 'hi', 'hey', 'how are you'], text: "Hello there! I'm Dr. Smiles 🐻, and I'm doing SUPER great! Are you ready for a fun adventure today? I highly recommend checking out our cool Games to start having fun! 🎮✨" },
-  { keywords: ['default'], text: "That's a fantastic question! 🌟 I love talking about teeth! Want to explore the clinic yourself and learn more? Go play the 'Clinic Explorer' game right now! 🏥🚀" }
+  { keywords: ['hurt', 'pain', 'scared', 'afraid', 'fear', 'cry', 'sad'], text: "Oh no, please don't be scared! 🐻 I have a super secret trick: my tools just tickle your teeth! 🪄 To see how brave you can be, you should totally play 'Tooth Defender' in our Games section! 🎮" },
+  { keywords: ['needle', 'shot', 'injection', 'poke'], text: "Ah, the sleepy juice! 💧 We just put the tooth to sleep so it snoozes while we wash away the bugs. It's like a tiny mosquito bite! Want to see how it works? Try playing 'Clinic Explorer'! 🏥✨" },
+  { keywords: ['drill', 'noise', 'loud', 'buzz', 'machine'], text: "That buzzy sound is my special tooth-tickler! Bzzzz! 🐝 It washes away the sticky sugar bugs. You can practice blasting bugs in the 'Sugar Bug Blaster' game! 🎯" },
+  { keywords: ['cavity', 'bug', 'sugar', 'candy', 'sweet', 'chocolate', 'hurt tooth'], text: "Yuck, sugar bugs! 🦠 They love to hide in tiny caves in our teeth. We just sweep them out and patch the cave with a shiny star! ⭐ Go play 'Sugar Bug Blaster' to help me catch them! 🦸‍♂️" },
+  { keywords: ['hello', 'hi', 'hey', 'how are you', 'howdy', 'morning', 'afternoon'], text: "Hello there! I'm Dr. Smiles 🐻, and I'm doing SUPER great! Are you ready for a fun adventure today? I highly recommend checking out our cool Games to start having fun! 🎮✨" },
+  { keywords: ['why', 'same', 'repeat', 'robot', 'fake', 'ai'], text: "Haha! 🐻 I am just a fun bear waiting to connect to my super-smart AI brain! Until my creator adds an API key, I might repeat myself sometimes. But I still love teeth! 🦷✨" },
+  { keywords: ['game', 'play', 'fun', 'bored'], text: "Did someone say GAMES?! 🎮 I love games! You should totally check out 'Tooth Defender' or 'Clinic Explorer'! They are so much fun and you learn about teeth! 🚀" },
+  { keywords: ['brush', 'paste', 'toothbrush', 'clean'], text: "Brushing is my favorite time of the day! 🪥 Did you know you should brush for 2 whole minutes? Try singing a song while you do it! 🎶" },
+  { keywords: ['dentist', 'doctor', 'you', 'who'], text: "I'm Dr. Smiles, your friendly dental bear! 🐻 My job is to make sure your smile is as bright as a star! ⭐ Want to learn what I do? Play 'Clinic Explorer'! 🏥" },
+  { keywords: ['yes', 'yeah', 'ok', 'sure', 'yep'], text: "Awesome! High five! ✋ Let's keep our smiles bright and shiny! Try heading over to the Games section to earn some coins! 💰✨" },
+  { keywords: ['no', 'nope', 'nah'], text: "That's totally okay! 🐻 We go at your pace. Whenever you are ready for some fun, the 'Sugar Bug Blaster' game is waiting for you! 🎯" }
 ];
+
+const DEFAULT_RESPONSES = [
+  "That's a fantastic question! 🌟 I love talking about teeth! Want to explore the clinic yourself and learn more? Go play the 'Clinic Explorer' game right now! 🏥🚀",
+  "Wow, that's interesting! 🐻 Did you know playing 'Sugar Bug Blaster' helps you learn how to fight cavity creeps? You should try it! 🎮",
+  "Haha, you are so fun to talk to! 😄 If you want to see what happens in a real dental clinic, check out 'Clinic Explorer' in the Games tab! 🏥✨",
+  "I'm so glad we're friends! 🐻 Remember to brush your teeth twice a day! Wanna practice? Play our fun 'Tooth Defender' game! 🪥🛡️"
+];
+let defaultResponseIndex = 0;
 
 export default function DrSmilesChat() {
   const userId = useStore(state => state.userId);
@@ -115,7 +128,8 @@ export default function DrSmilesChat() {
         responseText = MOCK_RESPONSES.find(r => r.keywords.some(kw => lowerMsg.includes(kw)))?.text;
         
         if (!responseText) {
-          responseText = MOCK_RESPONSES.find(r => r.keywords.includes('default')).text;
+          responseText = DEFAULT_RESPONSES[defaultResponseIndex];
+          defaultResponseIndex = (defaultResponseIndex + 1) % DEFAULT_RESPONSES.length;
         }
       }
 
