@@ -124,12 +124,19 @@ export default function DrSmilesChat() {
         }
       } catch (err) {
         console.warn("AI fallback:", err.message);
-        const lowerMsg = userMsg.toLowerCase();
-        responseText = MOCK_RESPONSES.find(r => r.keywords.some(kw => lowerMsg.includes(kw)))?.text;
         
-        if (!responseText) {
-          responseText = DEFAULT_RESPONSES[defaultResponseIndex];
-          defaultResponseIndex = (defaultResponseIndex + 1) % DEFAULT_RESPONSES.length;
+        // If an API key is present but failing, show the actual error to help the user debug it
+        if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY.length > 5) {
+           responseText = `Oops! I tried to connect to my AI brain, but got an error: "${err.message}". Please check your API key!`;
+        } else {
+          // Normal fallback if no API key is provided
+          const lowerMsg = userMsg.toLowerCase();
+          responseText = MOCK_RESPONSES.find(r => r.keywords.some(kw => lowerMsg.includes(kw)))?.text;
+          
+          if (!responseText) {
+            responseText = DEFAULT_RESPONSES[defaultResponseIndex];
+            defaultResponseIndex = (defaultResponseIndex + 1) % DEFAULT_RESPONSES.length;
+          }
         }
       }
 
