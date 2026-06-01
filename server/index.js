@@ -3,7 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import Progress from './models/Progress.js';
 import Chat from './models/Chat.js';
-import Otp from './models/Otp.js';
+import fetch from 'node-fetch';
 import Review from './models/Review.js';
 import nodemailer from 'nodemailer';
 
@@ -99,7 +99,7 @@ app.post('/api/auth/send-otp', async (req, res) => {
     // SEND via Nodemailer Ethereal
     await sendOtpEmail(username, otpCode);
     
-    res.json({ success: true, message: 'OTP stored and email sent.' });
+    res.json({ success: true, message: 'OTP sent to your email!', debug_otp: otpCode });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -10,6 +10,7 @@ export default function Login() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [shownOtp, setShownOtp] = useState('');
   const login = useStore(state => state.login);
   const navigate = useNavigate();
   const inputRefs = useRef([]);
@@ -33,6 +34,7 @@ export default function Login() {
       });
       const data = await res.json();
       if (res.ok) {
+        if (data.debug_otp) setShownOtp(data.debug_otp);
         setStep(2);
       } else {
         setError(data.message || 'Failed to send OTP');
@@ -149,7 +151,9 @@ export default function Login() {
               </div>
             </div>
 
-            {error && <p className="error-msg text-center">{error}</p>}
+                        {shownOtp && (
+              <p className="text-center text-teal-600 mb-2">Debug OTP: {shownOtp}</p>
+            )}
 
             <button type="submit" className="btn btn-primary w-full mt-6 flex items-center justify-center gap-2" disabled={loading}>
               {loading ? 'Verifying...' : 'Verify & Login'} <KeyRound size={18} />
