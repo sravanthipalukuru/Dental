@@ -63,7 +63,14 @@ export default function Navbar() {
 
         {/* Dynamic Profile/Login Link */}
         <Link to={userId ? "/profile" : "/login"} className="btn btn-primary navbar__cta">
-          {userId ? <><span style={{ fontSize: '1.3em', lineHeight: 1 }}>{avatar}</span> {userId}</> : "Login"}
+          {userId ? (
+            <>
+              <span style={{ fontSize: '1.3em', lineHeight: 1 }}>{avatar}</span>
+              <span className="navbar__user-id">{userId}</span>
+            </>
+          ) : (
+            "Login"
+          )}
         </Link>
 
         {/* Hamburger */}
