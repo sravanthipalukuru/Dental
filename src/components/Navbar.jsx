@@ -51,63 +51,58 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop links */}
-        <ul className="navbar__links">
-          {navLinks
-            .filter(link => userId || link.path === '/')
-            .map(({ path, label, emoji }) => (
-            <li key={path}>
-              <Link
-                to={path}
-                className={`navbar__link ${location.pathname === path ? 'navbar__link--active' : ''}`}
-              >
-                <span className="navbar__link-emoji">{emoji}</span>
-                {label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {userId && (
+          <ul className="navbar__links">
+            {navLinks.map(({ path, label, emoji }) => (
+              <li key={path}>
+                <Link
+                  to={path}
+                  className={`navbar__link ${location.pathname === path ? 'navbar__link--active' : ''}`}
+                >
+                  <span className="navbar__link-emoji">{emoji}</span>
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
 
-        {/* Dynamic Profile/Login Link */}
-        <Link to={userId ? "/profile" : "/login"} className="btn btn-primary navbar__cta">
-          {userId ? (
-            <>
-              <span style={{ fontSize: '1.2em', lineHeight: 1 }}>{avatar}</span>
-              <span className="navbar__user-id">{friendlyName}</span>
-            </>
-          ) : (
-            "Login"
-          )}
-        </Link>
+        {/* Dynamic Profile Link (only when logged in) */}
+        {userId && (
+          <Link to="/profile" className="btn btn-primary navbar__cta">
+            <span style={{ fontSize: '1.2em', lineHeight: 1 }}>{avatar}</span>
+            <span className="navbar__user-id">{friendlyName}</span>
+          </Link>
+        )}
 
         {/* Hamburger */}
         <button
           className={`navbar__hamburger ${menuOpen ? 'open' : ''}`}
           onClick={() => setMenuOpen(o => !o)}
           aria-label="Toggle menu"
+          style={{ visibility: userId ? 'visible' : 'hidden' }}
         >
           <span /><span /><span />
         </button>
       </div>
 
       {/* Mobile drawer */}
-      <div className={`navbar__drawer ${menuOpen ? 'navbar__drawer--open' : ''}`}>
-        {navLinks
-          .filter(link => userId || link.path === '/')
-          .map(({ path, label, emoji }) => (
-          <Link
-            key={path}
-            to={path}
-            className={`navbar__drawer-link ${location.pathname === path ? 'active' : ''}`}
-          >
-            {emoji} {label}
-          </Link>
-        ))}
-        {userId && (
+      {userId && (
+        <div className={`navbar__drawer ${menuOpen ? 'navbar__drawer--open' : ''}`}>
+          {navLinks.map(({ path, label, emoji }) => (
+            <Link
+              key={path}
+              to={path}
+              className={`navbar__drawer-link ${location.pathname === path ? 'active' : ''}`}
+            >
+              {emoji} {label}
+            </Link>
+          ))}
           <Link to="/child" className="btn btn-primary" style={{ marginTop: 12 }}>
             Start Adventure ✨
           </Link>
-        )}
-      </div>
+        </div>
+      )}
     </nav>
   );
 }
