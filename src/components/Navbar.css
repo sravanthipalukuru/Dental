@@ -87,8 +87,8 @@
   font-size: 14px; 
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  max-width: 150px;
+  gap: 8px;
+  max-width: 220px;
 }
 
 .navbar__user-id {
