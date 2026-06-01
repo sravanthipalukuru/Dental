@@ -40,42 +40,40 @@ const getDefaultProgress = (userId) => ({
 
 async function sendOtpEmail(email, otpCode) {
   try {
-    let transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, // use STARTTLS
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
       },
-      tls: {
-        rejectUnauthorized: false
-      }
+      body: JSON.stringify({
+        from: 'Happy Dental App <onboarding@resend.dev>',
+        to: [email],
+        subject: 'Your OTP Login Code',
+        html: `
+          <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; text-align: center;">
+            <h1 style="color: #0d9488;">Welcome Back! 🦷</h1>
+            <p style="font-size: 16px; color: #4b5563;">Your secure login code for Happy Dental App:</p>
+            <div style="background-color: #f0fdfa; border: 2px solid #5eead4; border-radius: 12px; padding: 20px; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #0f766e; margin: 30px 0;">
+              ${otpCode}
+            </div>
+            <p style="font-size: 14px; color: #9ca3af;">This code expires in 5 minutes. Do not share it with anyone.</p>
+          </div>
+        `
+      })
     });
 
-    transporter.sendMail({
-      from: `"Happy Dental App 🦷" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Your OTP Login Code",
-      html: `
-        <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; text-align: center;">
-          <h1 style="color: #0d9488;">Welcome Back!</h1>
-          <p style="font-size: 16px; color: #4b5563;">You requested a secure code to log into the Happy Dental app.</p>
-          <div style="background-color: #f0fdfa; border: 2px solid #5eead4; border-radius: 12px; padding: 20px; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0f766e; margin: 30px 0;">
-            ${otpCode}
-          </div>
-          <p style="font-size: 14px; color: #9ca3af;">This code will expire in 5 minutes.</p>
-        </div>
-      `,
-    }).then(() => {
-      console.log(`\n\x1b[36m📧 REAL EMAIL SENT to ${email}\x1b[0m\n`);
-    }).catch((err) => {
-      console.error("Failed to send real email. Did you set EMAIL_USER and EMAIL_PASS?", err);
-    });
+    const data = await res.json();
+    if (res.ok) {
+      console.log(`\n\x1b[36m📧 OTP EMAIL SENT via Resend to ${email}\x1b[0m\n`);
+    } else {
+      console.error('Resend API error:', data);
+    }
   } catch (err) {
-    console.error("Failed to send real email. Did you set EMAIL_USER and EMAIL_PASS?", err);
+    console.error('Failed to send email via Resend:', err);
   }
 }
+
 
 // POST to send OTP
 app.post('/api/auth/send-otp', async (req, res) => {
