@@ -3,16 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Image as ImageIcon, Smile, Mic, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import './DrSmilesChat.css';
-
-
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
-const model = genAI ? genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-  systemInstruction: "You are Dr. Smiles, an incredibly fun, magical, and super caring dental bear! Your absolute favorite thing in the whole world is taking care of teeth! You speak in an enthusiastic, goofy, and super friendly tone. You frequently recommend playing our awesome HappyDental mini-games (like 'Clinic Explorer', 'Tooth Defender', or 'Sugar Bug Blaster') to help kids learn and feel super brave! Keep your responses very short, punchy, and use lots of fun emojis so they fit easily in a mobile chat bubble."
-}) : null;
+const systemInstruction = "You are Dr. Smiles, an incredibly fun, magical, and super caring dental bear! Your absolute favorite thing in the whole world is taking care of teeth! You speak in an enthusiastic, goofy, and super friendly tone. You frequently recommend playing our awesome HappyDental mini-games (like 'Clinic Explorer', 'Tooth Defender', or 'Sugar Bug Blaster') to help kids learn and feel super brave! Keep your responses very short, punchy, and use lots of fun emojis so they fit easily in a mobile chat bubble.";
 
 const MOCK_RESPONSES = [
   { keywords: ['hurt', 'pain', 'scared', 'afraid', 'fear', 'cry', 'sad'], text: "Oh no, please don't be scared! 🐻 I have a super secret trick: my tools just tickle your teeth! 🪄 To see how brave you can be, you should totally play 'Tooth Defender' in our Games section! 🎮" },
@@ -75,13 +66,6 @@ export default function DrSmilesChat() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
-  const chatSessionRef = useRef(null);
-
-  useEffect(() => {
-    if (model && !chatSessionRef.current) {
-      chatSessionRef.current = model.startChat({ history: [] });
-    }
-  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -115,19 +99,50 @@ export default function DrSmilesChat() {
     // AI or Fallback Response
     setTimeout(async () => {
       let responseText = "";
+      const groqApiKey = import.meta.env.VITE_GROQ_API_KEY;
+      
       try {
-        if (chatSessionRef.current) {
-          const result = await chatSessionRef.current.sendMessage(userMsg);
-          responseText = result.response.text();
-        } else {
+        if (!groqApiKey) {
           throw new Error("No API key provided, using fallback");
         }
+
+        // Format conversation history for Groq
+        const apiMessages = [
+          { role: "system", content: systemInstruction },
+          ...messages.map(m => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text
+          })),
+          { role: "user", content: userMsg }
+        ];
+
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${groqApiKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "llama3-8b-8192", // Fast and capable open source model
+            messages: apiMessages,
+            max_tokens: 150
+          })
+        });
+
+        const result = await response.json();
+        
+        if (!response.ok) {
+           throw new Error(result.error?.message || "Failed to fetch from Groq");
+        }
+        
+        responseText = result.choices[0].message.content;
+
       } catch (err) {
         console.warn("AI fallback:", err.message);
         
         // If an API key is present but failing, show the actual error to help the user debug it
-        if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY.length > 5) {
-           responseText = `Oops! I tried to connect to my AI brain, but got an error: "${err.message}". Please check your API key!`;
+        if (groqApiKey && groqApiKey.length > 5) {
+           responseText = `Oops! I tried to connect to my AI brain, but got an error: "${err.message}". Please check your Groq API key!`;
         } else {
           // Normal fallback if no API key is provided
           const lowerMsg = userMsg.toLowerCase();
