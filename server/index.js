@@ -3,7 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import Progress from './models/Progress.js';
 import Chat from './models/Chat.js';
-import fetch from 'node-fetch';
+import Otp from './models/Otp.js';
 import Review from './models/Review.js';
 import nodemailer from 'nodemailer';
 
