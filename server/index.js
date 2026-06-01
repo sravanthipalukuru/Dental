@@ -48,7 +48,7 @@ async function sendOtpEmail(email, otpCode) {
       },
     });
 
-    await transporter.sendMail({
+    transporter.sendMail({
       from: `"Happy Dental App 🦷" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Your OTP Login Code",
@@ -62,9 +62,11 @@ async function sendOtpEmail(email, otpCode) {
           <p style="font-size: 14px; color: #9ca3af;">This code will expire in 5 minutes.</p>
         </div>
       `,
+    }).then(() => {
+      console.log(`\n\x1b[36m📧 REAL EMAIL SENT to ${email}\x1b[0m\n`);
+    }).catch((err) => {
+      console.error("Failed to send real email. Did you set EMAIL_USER and EMAIL_PASS?", err);
     });
-
-    console.log(`\n\x1b[36m📧 REAL EMAIL SENT to ${email}\x1b[0m\n`);
   } catch (err) {
     console.error("Failed to send real email. Did you set EMAIL_USER and EMAIL_PASS?", err);
   }
