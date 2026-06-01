@@ -39,59 +39,110 @@ const getDefaultProgress = (userId) => ({
   gameLevels: {}
 });
 
-// POST to register a new user
+// In-memory OTP store (simple, fast)
+const otpStore = new Map();
+
+async function sendOtpEmail(email, otpCode) {
+  try {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.log(`\n\x1b[32m[OTP] No RESEND_API_KEY set. OTP for ${email}: ${otpCode}\x1b[0m\n`);
+      return;
+    }
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Happy Dental <onboarding@resend.dev>',
+        to: [email],
+        subject: 'Your Happy Dental OTP Code',
+        html: `<div style="font-family:sans-serif;text-align:center;max-width:500px;margin:0 auto">
+          <h2 style="color:#0d9488">🦷 Happy Dental</h2>
+          <p>Your login code:</p>
+          <div style="font-size:36px;font-weight:bold;letter-spacing:10px;color:#0f766e;background:#f0fdfa;padding:20px;border-radius:12px;margin:20px 0">${otpCode}</div>
+          <p style="color:#9ca3af;font-size:13px">Expires in 5 minutes. Do not share.</p>
+        </div>`
+      })
+    });
+    console.log(`[OTP] Sent to ${email}`);
+  } catch (err) {
+    console.error('[OTP] Email send failed:', err.message);
+  }
+}
+
+// POST /api/auth/register
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { parentName, email, password } = req.body;
-    if (!parentName || !email || !password) {
+    if (!parentName || !email || !password)
       return res.status(400).json({ message: 'All fields are required' });
-    }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email is already registered' });
-    }
+    if (existingUser)
+      return res.status(400).json({ message: 'Email is already registered. Please login.' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    const newUser = new User({
-      parentName,
-      email,
-      password: hashedPassword
-    });
-    
+    const newUser = new User({ parentName, email, password: hashedPassword });
     await newUser.save();
 
-    // Create default progress for the new user based on their email
+    // Create default progress
     const defaultProgress = new Progress(getDefaultProgress(email));
     await defaultProgress.save();
-    
-    res.json({ success: true, message: 'Account created successfully', userId: email });
+
+    // Generate & store OTP
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore.set(email, { otp: otpCode, expires: Date.now() + 5 * 60 * 1000, isNewUser: true });
+    console.log(`\x1b[32m[OTP] ${email} => ${otpCode}\x1b[0m`);
+    sendOtpEmail(email, otpCode); // async, don't await
+
+    res.json({ success: true, message: 'Account created! Check your email for OTP.', debug_otp: otpCode });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// POST to login
+// POST /api/auth/login
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
-    }
-    
+    if (!user) return res.status(401).json({ message: 'No account found with this email. Please sign up.' });
+
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
-    }
-    
-    res.json({ success: true, message: 'Login successful', userId: email });
+    if (!isMatch) return res.status(401).json({ message: 'Wrong password. Please try again.' });
+
+    // Generate & store OTP
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore.set(email, { otp: otpCode, expires: Date.now() + 5 * 60 * 1000, isNewUser: false });
+    console.log(`\x1b[32m[OTP] ${email} => ${otpCode}\x1b[0m`);
+    sendOtpEmail(email, otpCode); // async, don't await
+
+    res.json({ success: true, message: 'Password correct! Check your email for OTP.', debug_otp: otpCode });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
+// POST /api/auth/verify-otp
+app.post('/api/auth/verify-otp', async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const record = otpStore.get(email);
+    if (!record) return res.status(401).json({ message: 'OTP expired or not found. Please try again.' });
+    if (Date.now() > record.expires) {
+      otpStore.delete(email);
+      return res.status(401).json({ message: 'OTP has expired. Please login again.' });
+    }
+    if (record.otp !== otp) return res.status(401).json({ message: 'Wrong OTP. Please check your email.' });
+
+    otpStore.delete(email);
+    const user = await User.findOne({ email });
+    res.json({ success: true, userId: email, isNewUser: record.isNewUser, parentName: user?.parentName });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 // GET user progress
 app.get('/api/progress/:userId', async (req, res) => {
